@@ -108,6 +108,12 @@ class Llvm(CMakePackage, CudaPackage):
         "less memory to build, less stable",
     )
     variant(
+        "llvm_dylib",
+        default=False,
+        description="Build libLLVM.so using -DLLVM_BUILD_LLVM_DYLIB=true, "
+        "for TAU llvm plugin.",
+    )
+    variant(
         "all_targets",
         default=False,
         description="Build all supported targets, default targets "
@@ -430,6 +436,8 @@ class Llvm(CMakePackage, CudaPackage):
 
         if "+shared_libs" in spec:
             cmake_args.append("-DBUILD_SHARED_LIBS:Bool=ON")
+        if "+llvm_dylib" in spec:
+            cmake_args.append("-DLLVM_BUILD_LLVM_DYLIB:Bool=ON")
         if "+omp_debug" in spec:
             cmake_args.append("-DLIBOMPTARGET_ENABLE_DEBUG:Bool=ON")
 
