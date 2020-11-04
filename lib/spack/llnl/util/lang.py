@@ -20,19 +20,15 @@ import sys
 ignore_modules = [r'^\.#', '~$']
 
 
-# On macOS, Python 3.8 multiprocessing now defaults to the 'spawn' start
-# method. Spack cannot currently handle this, so force the process to start
-# using the 'fork' start method.
-#
-# TODO: This solution is not ideal, as the 'fork' start method can lead to
-# crashes of the subprocess. Figure out how to make 'spawn' work.
+# Force use of 'spawn' start method on all operating systems for Python >= 3.x
+# This is the default for Mac OS and Python >= 3.8
 #
 # See:
 # * https://github.com/spack/spack/pull/18124
 # * https://docs.python.org/3/library/multiprocessing.html#contexts-and-start-methods  # noqa: E501
 # * https://bugs.python.org/issue33725
 if sys.version_info >= (3,):  # novm
-    fork_context = multiprocessing.get_context('fork')
+    fork_context = multiprocessing.get_context('spawn')
 else:
     fork_context = multiprocessing
 

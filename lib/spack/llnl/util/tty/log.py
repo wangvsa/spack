@@ -21,6 +21,7 @@ from six import string_types
 from six import StringIO
 
 import llnl.util.tty as tty
+from llnl.util.lang import fork_context
 
 try:
     import termios
@@ -332,12 +333,12 @@ class FileWrapper(object):
 
 class MultiProcessFd(object):
     """Return an object which stores a file descriptor and can be passed as an
-       argument to a function run with ``multiprocessing.Process``, such that
+       argument to a function run with ``fork_context.Process``, such that
        the file descriptor is available in the subprocess."""
     def __init__(self, fd):
         self._connection = None
         self._fd = None
-        if sys.version_info >= (3, 8):
+        if sys.version_info >= (3,):
             self._connection = multiprocessing.connection.Connection(fd)
         else:
             self._fd = fd
@@ -509,7 +510,7 @@ class log_output(object):
                 # just don't forward input if this fails
                 input_multiprocess_fd = None
 
-            self.process = multiprocessing.Process(
+            self.process = fork_context.Process(
                 target=_writer_daemon,
                 args=(
                     input_multiprocess_fd, read_multiprocess_fd, write_fd,

@@ -9,10 +9,10 @@ import pickle
 import pydoc
 import io
 import sys
-import multiprocessing
 
 import spack.architecture
 import spack.config
+from llnl.util.lang import fork_context
 
 
 _serialize = sys.version_info >= (3, 8) and sys.platform == 'darwin'
@@ -45,7 +45,7 @@ class SpackTestProcess(object):
 
     def create(self):
         test_state = TestState()
-        return multiprocessing.Process(
+        return fork_context.Process(
             target=self._restore_and_run,
             args=(self.fn, test_state))
 
