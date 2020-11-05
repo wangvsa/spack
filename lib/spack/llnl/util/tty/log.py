@@ -367,7 +367,7 @@ def close_connection_and_file(multiprocess_fd, file):
     # simple FD; closing the FD here appears to conflict with
     # closure of the File object (in < 3.8 that is). Therefore this needs
     # to choose whether to close the File or the Connection.
-    if sys.version_info >= (3, 8):
+    if sys.version_info >= (3,):
         multiprocess_fd.close()
     else:
         file.close()
@@ -688,9 +688,8 @@ def _writer_daemon(stdin_multiprocess_fd, read_multiprocess_fd, write_fd, echo,
     # If this process was forked, then it will inherit file descriptors from
     # the parent process. This process depends on closing all instances of
     # write_fd to terminate the reading loop, so we close the file descriptor
-    # here. Forking is the process spawning method everywhere except Mac OS
-    # for Python >= 3.8
-    if sys.version_info < (3, 8) or sys.platform != 'darwin':
+    # here. Forking is the process spawning method for Python < 3
+    if sys.version_info < (3,):
         os.close(write_fd)
 
     # Use line buffering (3rd param = 1) since Python 3 has a bug

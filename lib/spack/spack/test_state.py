@@ -15,7 +15,7 @@ import spack.config
 from llnl.util.lang import fork_context
 
 
-_serialize = sys.version_info >= (3, 8) and sys.platform == 'darwin'
+_serialize = sys.version_info >= (3,)
 
 
 patches = None
